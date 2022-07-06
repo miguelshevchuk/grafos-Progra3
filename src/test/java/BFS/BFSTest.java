@@ -4,19 +4,30 @@ import algoritmos.BFS;
 import ejercicios.EjerciciosTest;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BFSTest extends EjerciciosTest {
 
-    private BFS bfs = new BFS(this.grafoNoDirigido, 1);
-    private BFS bfs2 = new BFS(this.grafoNoDirigido2, 2);
-
+    private BFS bfs = new BFS();
     @Test
-    public void probar(){
-        this.bfs.ejecutar();
+    public void dibujarGrafoNoDirigido1(){
+        Map<Integer, Integer> expected = new HashMap<>();
+        expected.put(1, 2);
+        expected.put(3, 6);
+        expected.put(4, 3);
+        expected.put(5, 1);
+        expected.put(6, 2);
+        expected.put(7, 6);
+        expected.put(8, 7);
+
+        this.bfs.ejecutar(this.grafoNoDirigido, 1);
+
     }
 
     @Test
-    public void probar2(){
-        this.bfs2.ejecutar();
+    public void dibujarGrafoNoDirigido2(){
+        this.bfs.ejecutar(this.grafoNoDirigido2, 2);
     }
 
 }

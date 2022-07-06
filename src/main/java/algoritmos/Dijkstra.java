@@ -6,7 +6,7 @@ import grafo.GrafoNoDirigido;
 
 import java.util.*;
 
-public class BFS extends AlgoritmoGrafos {
+public class Dijkstra extends AlgoritmoGrafos {
 
     public void ejecutar(GrafoNoDirigido<Integer> grafo, Integer nodoInicial) {
 

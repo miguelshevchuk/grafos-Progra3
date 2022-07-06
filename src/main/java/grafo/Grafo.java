@@ -1,6 +1,6 @@
 package grafo;
 
-import java.util.Iterator;
+import java.util.List;
 
 public interface Grafo<T> {
 	
@@ -32,16 +32,16 @@ public interface Grafo<T> {
 	public int cantidadArcos();
 
 	// Obtiene un iterador que me permite recorrer todos los vertices almacenados en el grafo 
-	public Iterator<Integer> obtenerVertices();
+	public List<Integer> obtenerVertices();
 
 	// Obtiene un iterador que me permite recorrer todos los vertices adyacentes a verticeId 
-	public Iterator<Integer> obtenerAdyacentes(int verticeId);
+	public List<Integer> obtenerAdyacentes(int verticeId);
 
 	// Obtiene un iterador que me permite recorrer todos los arcos del grafo
-	public Iterator<Arco<T>> obtenerArcos();
+	public List<Arco<T>> obtenerArcos();
 		
 	// Obtiene un iterador que me permite recorrer todos los arcos que parten desde verticeId
-	public Iterator<Arco<T>> obtenerArcos(int verticeId);
+	public List<Arco<T>> obtenerArcos(int verticeId);
 	
 	
 }

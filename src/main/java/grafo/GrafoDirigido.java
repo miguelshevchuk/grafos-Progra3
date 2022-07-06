@@ -1,85 +1,91 @@
 package grafo;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GrafoDirigido<T> implements Grafo<T> {
 
+	List<Arco<T>> arcos = new ArrayList<Arco<T>>();
+	List<Integer> vertices = new ArrayList<Integer>();
+
 	@Override
 	public void agregarVertice(int verticeId) {
-		// TODO Auto-generated method stub
+		this.vertices.add(verticeId);
 
 	}
 
 	@Override
 	public void borrarVertice(int verticeId) {
-		// TODO Auto-generated method stub
+		this.vertices.remove(verticeId);
 
 	}
 
 	@Override
 	public void agregarArco(int verticeId1, int verticeId2, T etiqueta) {
-		// TODO Auto-generated method stub
+		this.arcos.add(new Arco<T>(verticeId1, verticeId2, etiqueta));
 
 	}
 
 	@Override
 	public void borrarArco(int verticeId1, int verticeId2) {
-		// TODO Auto-generated method stub
+		this.arcos = this.arcos.stream().filter(
+				a -> a.getVerticeOrigen() != verticeId1 && a.getVerticeDestino() != verticeId2
+		).collect(Collectors.toList());
 
 	}
 
 	@Override
 	public boolean contieneVertice(int verticeId) {
-		// TODO Auto-generated method stub
-		return false;
+
+		return this.vertices.contains(verticeId);
 	}
 
 	@Override
 	public boolean existeArco(int verticeId1, int verticeId2) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.arcos.stream().anyMatch(a -> a.getVerticeOrigen() == verticeId1 && a.getVerticeDestino() == verticeId2);
 	}
 
 	@Override
 	public Arco<T> obtenerArco(int verticeId1, int verticeId2) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.arcos.stream().filter(
+				a -> a.getVerticeOrigen() == verticeId1 && a.getVerticeDestino() == verticeId2).findFirst().get();
+
 	}
 
 	@Override
 	public int cantidadVertices() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.vertices.size();
 	}
 
 	@Override
 	public int cantidadArcos() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.arcos.size();
 	}
 
 	@Override
-	public Iterator<Integer> obtenerVertices() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Integer> obtenerVertices() {
+		return this.vertices;
 	}
 
 	@Override
-	public Iterator<Integer> obtenerAdyacentes(int verticeId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Integer> obtenerAdyacentes(int verticeId) {
+		return this.arcos.stream().filter(
+				a -> a.getVerticeOrigen() == verticeId || a.getVerticeDestino() == verticeId)
+				.map(a-> (a.getVerticeOrigen()==verticeId)?a.getVerticeOrigen(): a.getVerticeDestino())
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public Iterator<Arco<T>> obtenerArcos() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Arco<T>> obtenerArcos() {
+		return this.arcos;
 	}
 
 	@Override
-	public Iterator<Arco<T>> obtenerArcos(int verticeId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Arco<T>> obtenerArcos(int verticeId) {
+		return this.arcos.stream().filter(
+				a -> a.getVerticeOrigen() == verticeId).collect(Collectors.toList());
+
 	}
 
 }

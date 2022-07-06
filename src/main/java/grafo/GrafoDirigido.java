@@ -71,8 +71,8 @@ public class GrafoDirigido<T> implements Grafo<T> {
 	@Override
 	public List<Integer> obtenerAdyacentes(int verticeId) {
 		return this.arcos.stream().filter(
-				a -> a.getVerticeOrigen() == verticeId || a.getVerticeDestino() == verticeId)
-				.map(a-> (a.getVerticeOrigen()==verticeId)?a.getVerticeOrigen(): a.getVerticeDestino())
+				a -> a.getVerticeOrigen() == verticeId)
+				.map(a-> a.getVerticeDestino())
 				.collect(Collectors.toList());
 	}
 

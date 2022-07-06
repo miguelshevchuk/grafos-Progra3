@@ -1,12 +1,10 @@
 package algoritmos;
 
 import ejercicios.AlgoritmoGrafos;
-import grafo.Arco;
+import grafo.Arista;
 import grafo.GrafoNoDirigido;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class BFS extends AlgoritmoGrafos {
 
@@ -15,7 +13,7 @@ public class BFS extends AlgoritmoGrafos {
     private int cantAristas;
 
     private int nodoInicial;
-    private ArrayList<Arco> arbol;
+    private ArrayList<Arista> arbol;
     private boolean[] nodoTerminado;
 
     public GrafoNoDirigido getGrafo() {
@@ -40,57 +38,38 @@ public class BFS extends AlgoritmoGrafos {
         this.cantAristas = grafo.cantidadArcos();
 
         this.nodoInicial = nodoInicial;
-        this.arbol = new ArrayList<Arco>();
+        //this.arbol = new ArrayList<Arco>();
         this.nodoTerminado = new boolean[this.cantNodos];
     }
 
-    public void ejecutar(){
+    public void ejecutar() {
 
         Queue<Integer> cola = new LinkedList<Integer>();
         // acolo el nodo inicial
         cola.offer(this.nodoInicial);
 
-        int nodo, indice;
+        Map<Integer, String> estadoVertices = new HashMap<Integer, String>();
+        Map<Integer, Integer> padres = new HashMap<Integer, Integer>();
 
         // mientras la cola no está vacía
-        while(!cola.isEmpty()) {
+        while (!cola.isEmpty()) {
             // pispeo el primer nodo de la cola
-            nodo = cola.peek();
+            Integer verticeActual = cola.peek();
 
-            // genero todos los números de nodo
-            for (int i = 0; i < this.cantNodos; i++) {
-                // si el nodo generado no es el nodo actual y no fue terminado
-                if (nodo != i && !this.nodoTerminado[i]) {
-                    // genero el índice para la matriz simétrica
-                    if (nodo < i) {
-                        indice = this.grafo.getGrafo().getIndice(nodo, i);
-                    } else {
-                        indice = this.grafo.getGrafo().getIndice(i, nodo);
-                    }
+            List<Integer> adyacentes = this.grafo.obtenerAdyacentes(verticeActual);
 
-                    // si existe una arista que una estos nodos
-                    if (this.grafo.getGrafo().hayArista(indice)) {
-                        // agrego la arista al árbol
-                        this.arbol.add(new Arista(nodo, i));
-                        // acolo el otro nodo de la arista para seguir recorriendo a partir de él
-                        cola.offer(i);
-                        // marco como terminado al nodo acolado
-                        this.nodoTerminado[i] = true;
-                    }
+            for (Integer adyacente : adyacentes) {
+                if (estadoVertices.get(adyacente) == null || "BLANCO".equals(estadoVertices.get(adyacente))) {
+                    estadoVertices.put(adyacente, "GRIS");
+                    padres.put(adyacente, verticeActual);
+                    cola.offer(adyacente);
                 }
             }
 
-            // desacolo el primer nodo de la cola y lo marco como terminado
-            nodo = cola.poll();
-            this.nodoTerminado[nodo] = true;
+            cola.poll();
+            estadoVertices.put(verticeActual, "NEGRO");
         }
-
-        // escribo la solucion en consola
-        this.escribirSolucionEnConsola();
-
-        // escribo la solucion completa en un archivo
-        this.escribirSolucionEnArchivo("BFS" + "_" + this.cantNodos + "_"
-                + String.format("%.2f", this.getGrafo().getPtajeAdyacencia()) + ".out");
+        printer.println(padres);
     }
 
 }

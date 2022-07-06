@@ -1,4 +1,4 @@
-package ProgramacionIII.ClaseGrafo;
+package grafo;
 
 import java.util.Iterator;
 

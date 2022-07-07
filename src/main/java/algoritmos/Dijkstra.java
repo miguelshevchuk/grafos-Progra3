@@ -1,8 +1,10 @@
 package algoritmos;
 
 import ejercicios.AlgoritmoGrafos;
-import grafo.Arista;
+import grafo.Arco;
 import grafo.GrafoNoDirigido;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.*;
 
@@ -11,33 +13,66 @@ public class Dijkstra extends AlgoritmoGrafos {
     public void ejecutar(GrafoNoDirigido<Integer> grafo, Integer nodoInicial) {
 
         Queue<Integer> cola = new LinkedList<>();
-        //Encolo el nodo inicial
         cola.offer(nodoInicial);
 
-        Map<Integer, String> estadoVertices = new HashMap<>();
-        List<Arista> arbol = new ArrayList<>();
-        arbol.add(new Arista(null, nodoInicial));
+        Map<Integer, NodoDistancia> camino = new HashMap<>();
 
-        // mientras la cola no está vacía
+        Integer distanciaRecorrida = 0;
+
+        camino.put(nodoInicial, new NodoDistancia(null, distanciaRecorrida, "PERMANENTE"));
+
         while (!cola.isEmpty()) {
-            //Desencolo el primer nodo de la lista
+
             Integer verticePadre = cola.peek();
 
             List<Integer> adyacentes = grafo.obtenerAdyacentes(verticePadre);
 
+            Integer distanciaMinima = 0;
+            Arco<Integer> arcoMasCorto = null;
+
             for (Integer adyacente : adyacentes) {
-                if (estadoVertices.get(adyacente) == null || "BLANCO".equals(estadoVertices.get(adyacente))) {
-                    estadoVertices.put(adyacente, "GRIS");
-                    arbol.add(new Arista(verticePadre, adyacente));
-                    cola.offer(adyacente);
+                if (camino.get(adyacente) == null || !"PERMANENTE".equals(camino.get(adyacente).getEstado())) {
+                    Arco<Integer> arco = grafo.obtenerArco(verticePadre, adyacente);
+
+                    camino.put(adyacente, new NodoDistancia(verticePadre,
+                            distanciaRecorrida+arco.getEtiqueta(), "PROVISORIO"));
+
+                    if(distanciaMinima > arco.getEtiqueta() || distanciaMinima == 0){
+                        arcoMasCorto = arco;
+                        distanciaMinima = arco.getEtiqueta();
+                    }
+
                 }
             }
 
+            if(Objects.nonNull(arcoMasCorto)){
+                cola.offer(arcoMasCorto.getVerticeDestino());
+                distanciaRecorrida = arcoMasCorto.getEtiqueta() + distanciaRecorrida;
+
+                NodoDistancia nodoMasCorto = camino.get(arcoMasCorto.getVerticeDestino());
+                nodoMasCorto.pasarAPermanente();
+                camino.put(arcoMasCorto.getVerticeDestino(), nodoMasCorto);
+            }
+
+
             cola.poll();
-            estadoVertices.put(verticePadre, "NEGRO");
         }
 
-        printer.println(arbol);
+        printer.println(camino);
     }
+
+    @Data
+    @AllArgsConstructor
+    public class NodoDistancia{
+        private Integer verticePadre;
+        private Integer distanciaTotal;
+        private String estado;
+
+        public void pasarAPermanente(){
+            this.estado = "PERMANENTE";
+        }
+
+    }
+
 
 }
